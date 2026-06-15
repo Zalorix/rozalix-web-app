@@ -52,7 +52,7 @@ export default function AssistantPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex gap-1 border-b border-[var(--color-slate-200)]">
+      <div className="no-scrollbar flex gap-1 overflow-x-auto border-b border-[var(--color-slate-200)]">
         {TABS.map((t) => {
           const Icon = t.icon;
           return (
@@ -60,7 +60,7 @@ export default function AssistantPage() {
               key={t.id}
               onClick={() => setTab(t.id)}
               className={cn(
-                "-mb-px inline-flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors",
+                "-mb-px inline-flex shrink-0 items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors",
                 tab === t.id
                   ? "border-[var(--color-indigo)] text-[var(--color-indigo-deeper)]"
                   : "border-transparent text-[var(--color-slate-500)] hover:text-[var(--color-ink-900)]",
