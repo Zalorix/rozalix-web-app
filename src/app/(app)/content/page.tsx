@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { useSearchParams, useRouter } from "next/navigation";
 import { FileText, Check, Eye, Pencil, Globe } from "lucide-react";
 import type { ContentPage, ContentStatus } from "@/lib/types";
@@ -11,9 +12,23 @@ import { renderMarkdown } from "@/lib/markdown";
 import { cn } from "@/lib/cn";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Input, Textarea } from "@/components/ui/Field";
+import { Input } from "@/components/ui/Field";
 import { ContentStatusBadge } from "@/components/ui/StatusBadge";
 import { Spinner } from "@/components/ui/EmptyState";
+
+// The block editor is client-only (touches the DOM) and heavy, so it's loaded
+// on demand and never server-rendered.
+const BlockEditor = dynamic(
+  () => import("@/components/content/BlockEditor").then((m) => m.BlockEditor),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex justify-center py-10">
+        <Spinner />
+      </div>
+    ),
+  },
+);
 
 export default function ContentRoute() {
   return (
@@ -215,13 +230,9 @@ function Editor({
       {/* Body */}
       <div className="px-5 py-5">
         {tab === "edit" ? (
-          <Textarea
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-            rows={20}
-            className="font-[var(--font-mono)] text-[13px] leading-relaxed"
-            placeholder="Write in markdown…"
-          />
+          <div className="min-h-[320px] rounded-[var(--radius-md)] border border-[var(--color-slate-200)] py-3">
+            <BlockEditor initialMarkdown={page.body} onChange={setBody} />
+          </div>
         ) : (
           <div className="min-h-[300px] rounded-[var(--radius-md)] border border-[var(--color-slate-200)] px-5 py-4">
             <h1 className="mb-2 text-2xl font-semibold">{title}</h1>
