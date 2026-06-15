@@ -83,8 +83,8 @@ function ContentManager() {
   }
 
   return (
-    <div className="space-y-5">
-      <div className="grid gap-5 lg:grid-cols-[260px_1fr]">
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="grid min-h-0 flex-1 grid-rows-[auto_minmax(0,1fr)] gap-5 lg:grid-cols-[260px_1fr] lg:grid-rows-1">
         {/* Page list */}
         <Card className="h-max overflow-hidden">
           <div className="border-b border-[var(--color-slate-100)] px-4 py-3 text-[12px] font-semibold tracking-wide text-[var(--color-slate-400)] uppercase">
@@ -134,7 +134,7 @@ function ContentManager() {
         {active ? (
           <Editor key={active.id} page={active} onSaved={refresh} />
         ) : (
-          <Card className="flex items-center justify-center py-20 text-sm text-[var(--color-slate-400)]">
+          <Card className="flex min-h-0 items-center justify-center py-20 text-sm text-[var(--color-slate-400)]">
             Select a page to edit
           </Card>
         )}
@@ -171,7 +171,7 @@ function Editor({
   }
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="flex min-h-0 flex-col overflow-hidden">
       {/* Editor header */}
       <div className="flex flex-wrap items-center gap-3 border-b border-[var(--color-slate-100)] px-5 py-4">
         <div className="min-w-0 flex-1">
@@ -221,10 +221,10 @@ function Editor({
       </div>
 
       {/* Body — Notion-style block editor (its styling matches the live site).
-          Fixed height + internal scroll keeps the page stable; the slash/format
-          menus float to the cursor. */}
-      <div className="px-5 py-5">
-        <div className="rzx-content-editor scroll-slim h-[clamp(320px,55vh,620px)] overflow-y-auto rounded-[var(--radius-md)] border border-[var(--color-slate-200)] py-3">
+          The editor is the only scroll region, so the page never grows a second
+          scrollbar; the slash/format menus float to the cursor. */}
+      <div className="flex min-h-0 flex-1 flex-col px-5 py-5">
+        <div className="rzx-content-editor scroll-slim min-h-0 flex-1 overflow-y-auto rounded-[var(--radius-md)] border border-[var(--color-slate-200)] py-3">
           <BlockEditor initialMarkdown={page.body} onChange={setBody} />
         </div>
       </div>

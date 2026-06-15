@@ -144,6 +144,13 @@
   color: var(--color-indigo);
   text-decoration: underline;
 }
+/* No focus ring on the editable area (the bordered box is the boundary). */
+.rzx-content-editor .bn-editor:focus,
+.rzx-content-editor .bn-editor:focus-visible,
+.rzx-content-editor [contenteditable]:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
 @media (max-width: 640px) {
   .rzx-content-editor .bn-editor { padding-inline: 18px; }
 }
