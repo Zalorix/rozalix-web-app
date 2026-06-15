@@ -36,14 +36,14 @@ export default function LoginPage() {
 
   if (!ready || user) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex h-dvh items-center justify-center">
         <Spinner />
       </div>
     );
   }
 
   return (
-    <div className="grid min-h-screen lg:grid-cols-2">
+    <div className="grid h-dvh overflow-y-auto lg:grid-cols-2">
       {/* Form side */}
       <div className="flex flex-col justify-center px-6 py-12 sm:px-12">
         <div className="mx-auto w-full max-w-sm">

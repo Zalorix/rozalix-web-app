@@ -10,7 +10,7 @@ export default function ChatPreviewRoute() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center">
+        <div className="flex h-dvh items-center justify-center">
           <Spinner />
         </div>
       }
@@ -33,7 +33,7 @@ function ChatPreview() {
       : "rozalix-landing";
 
   return (
-    <div className="min-h-screen bg-[var(--color-slate-100)]">
+    <div className="h-dvh overflow-y-auto bg-[var(--color-slate-100)]">
       {/* Faux site chrome to frame the widget as an embed */}
       <div className="border-b border-[var(--color-slate-200)] bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
