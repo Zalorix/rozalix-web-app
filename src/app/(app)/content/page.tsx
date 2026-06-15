@@ -11,7 +11,6 @@ import { formatDateTime } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Field";
 import { Spinner } from "@/components/ui/EmptyState";
 
 // The block editor is client-only (touches the DOM) and heavy, so it's loaded
@@ -177,12 +176,12 @@ function Editor({
           right. Everything else is editing real estate. */}
       <div className="flex items-center gap-3 border-b border-[var(--color-slate-100)] px-4 py-2.5">
         <div className="min-w-0 flex-1">
-          <Input
+          <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="border-0 px-0 text-[15px] font-semibold focus:shadow-none focus:ring-0"
+            className="w-full border-0 bg-transparent p-0 text-[15px] font-semibold text-[var(--color-ink-900)] focus:outline-none"
           />
-          <p className="px-0 text-[11.5px] text-[var(--color-slate-400)]">
+          <p className="text-[11.5px] text-[var(--color-slate-400)]">
             {dirty ? "Unsaved changes" : `Updated ${formatDateTime(page.updatedAt)}`}
           </p>
         </div>
