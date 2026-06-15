@@ -94,6 +94,10 @@
     border-radius: 999px;
   }
   .scroll-slim::-webkit-scrollbar-thumb:hover { background: var(--color-slate-400); background-clip: content-box; }
+
+  /* Hidden scrollbar — used for horizontally scrolling filter-chip rows */
+  .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
 }
 
 /* Slide-over / drawer entrance animations */

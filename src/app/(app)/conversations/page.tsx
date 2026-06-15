@@ -220,13 +220,13 @@ function ConversationsPage() {
     <div className="flex min-h-0 flex-1 flex-col gap-4">
       {/* Status quick filters + a Filters popover for the rest */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-1.5">
+        <div className="no-scrollbar flex gap-1.5 overflow-x-auto sm:min-w-0 sm:flex-1">
           {CONV_FILTERS.map((f) => (
             <button
               key={f}
               onClick={() => setStatusFilter(f)}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-[var(--radius-pill)] border px-3 py-1.5 text-[13px] font-medium transition-colors",
+                "inline-flex shrink-0 items-center gap-1.5 rounded-[var(--radius-pill)] border px-3 py-1.5 text-[13px] font-medium transition-colors",
                 statusFilter === f
                   ? "border-[var(--color-indigo)] text-[var(--color-indigo-deeper)]"
                   : "border-[var(--color-slate-200)] text-[var(--color-slate-600)] hover:border-[var(--color-slate-300)]",
@@ -247,7 +247,7 @@ function ConversationsPage() {
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-3">
           <FilterPopover
             activeCount={activeFilters}
             onClear={() => setQuery("")}
