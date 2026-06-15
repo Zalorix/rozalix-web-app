@@ -19,6 +19,7 @@ import { readAvatar } from "@/lib/image";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
+import { InstallButton } from "@/components/pwa/InstallButton";
 
 export default function SettingsPage() {
   const { user } = useAuth();
@@ -250,6 +251,19 @@ await fetch("https://api.rozalix.com/v1/leads", {
             </span>
             .
           </p>
+        </div>
+      </Card>
+
+      {/* Install the dashboard as an app */}
+      <Card>
+        <CardHeader title="Install this dashboard" />
+        <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-5">
+          <p className="min-w-[200px] flex-1 text-sm text-[var(--color-slate-500)]">
+            Add Rozalix to your phone&apos;s home screen to open it full-screen
+            like an app — and (soon) get push alerts when a new lead or chat
+            comes in.
+          </p>
+          <InstallButton />
         </div>
       </Card>
 
