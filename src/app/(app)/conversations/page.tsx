@@ -8,7 +8,6 @@ import {
   Hand,
   Send,
   Sparkles,
-  ExternalLink,
   Search,
   ChevronLeft,
 } from "lucide-react";
@@ -283,14 +282,6 @@ function ConversationsPage() {
             </button>
           ))}
         </div>
-        <Link
-          href="/chat-preview"
-          target="_blank"
-          className="inline-flex shrink-0 items-center gap-1.5 text-[13px] font-medium text-[var(--color-indigo)] hover:underline"
-        >
-          <ExternalLink className="size-4" />
-          <span className="hidden sm:inline">Open chat preview</span>
-        </Link>
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col gap-4 lg:grid lg:grid-cols-[320px_minmax(0,1fr)] lg:grid-rows-1 lg:gap-5">
