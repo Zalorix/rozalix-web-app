@@ -10,6 +10,7 @@ import {
   Sparkles,
   ExternalLink,
   Search,
+  ChevronLeft,
 } from "lucide-react";
 import type {
   Conversation,
@@ -287,9 +288,15 @@ function ConversationsPage() {
         </div>
       </div>
 
-      <div className="grid min-h-0 flex-1 gap-5 lg:grid-cols-[320px_minmax(0,1fr)] lg:grid-rows-1">
-        {/* Thread list — only the rows scroll; pagination stays pinned. */}
-        <Card className="flex h-[70vh] flex-col overflow-hidden lg:h-auto lg:min-h-0">
+      <div className="flex min-h-0 flex-1 flex-col gap-4 lg:grid lg:grid-cols-[320px_minmax(0,1fr)] lg:grid-rows-1 lg:gap-5">
+        {/* Thread list — only the rows scroll; pagination stays pinned. On
+            mobile it fills the screen and hides once a chat is opened. */}
+        <Card
+          className={cn(
+            "min-h-0 flex-1 flex-col overflow-hidden lg:flex lg:h-auto lg:min-h-0",
+            selected ? "hidden lg:flex" : "flex",
+          )}
+        >
           {list === null ? (
             <div className="flex justify-center py-16">
               <Spinner />
@@ -361,8 +368,15 @@ function ConversationsPage() {
 
         {/* Transcript */}
         {selected ? (
-          <Card className="flex h-[70vh] flex-col overflow-hidden lg:h-auto lg:min-h-0">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--color-slate-100)] px-5 py-3.5">
+          <Card className="flex min-h-0 flex-1 flex-col overflow-hidden lg:h-auto lg:min-h-0">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--color-slate-100)] px-4 py-3.5 sm:px-5">
+              <button
+                onClick={() => setSelectedId(null)}
+                aria-label="Back"
+                className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-slate-100)] text-[var(--color-slate-500)] transition-colors hover:bg-[var(--color-slate-200)] lg:hidden"
+              >
+                <ChevronLeft className="size-4" />
+              </button>
               <Avatar
                 size="sm"
                 initials={
@@ -503,7 +517,7 @@ function ConversationsPage() {
             </div>
           </Card>
         ) : (
-          <Card className="flex h-[70vh] items-center justify-center text-sm text-[var(--color-slate-400)] lg:h-auto lg:min-h-0">
+          <Card className="hidden items-center justify-center text-sm text-[var(--color-slate-400)] lg:flex lg:h-auto lg:min-h-0">
             Select a conversation to view the transcript
           </Card>
         )}

@@ -148,12 +148,12 @@ function BookingRow({
             initials={booking.customerName.slice(0, 2).toUpperCase()}
             accent={accent}
           />
-          <span className="font-medium">{booking.customerName}</span>
-          <span className="inline-flex items-center gap-1 text-[13px] text-[var(--color-slate-500)]">
-            <CalendarPlus className="size-3.5" />
-            {formatSlot(booking.slotISO)}
-          </span>
+          <span className="truncate font-medium">{booking.customerName}</span>
         </div>
+        <span className="mt-1.5 inline-flex items-center gap-1.5 text-[12.5px] font-medium text-[var(--color-indigo)]">
+          <CalendarPlus className="size-3.5 shrink-0" />
+          {formatSlot(booking.slotISO)}
+        </span>
         <p className="mt-1.5 text-sm text-[var(--color-slate-600)]">
           {booking.summary}
         </p>
