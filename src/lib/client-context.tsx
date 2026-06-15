@@ -16,6 +16,8 @@ interface Workspace {
   client: Client | null;
   clients: Client[];
   setActiveClientId: (id: string) => void;
+  /** Re-fetch clients (e.g. after editing the brand logo in Settings). */
+  refreshClients: () => Promise<void>;
 }
 
 const WorkspaceContext = createContext<Workspace | null>(null);

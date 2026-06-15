@@ -15,6 +15,7 @@ import { CLIENTS, LEADS, CONTENT_PAGES } from "./seed";
 // Bump the version suffix whenever the seed shape changes so existing
 // browsers re-seed instead of choking on stale records.
 const KEYS = {
+  clients: "rzx.clients.v1",
   leads: "rzx.leads.v4",
   content: "rzx.content.v2",
 } as const;
@@ -51,7 +52,7 @@ function byNewest(a: { createdAt: string }, b: { createdAt: string }) {
 // ---------------------------- Clients ----------------------------
 
 export async function getClient(clientId: string): Promise<Client | undefined> {
-  return delay(CLIENTS.find((c) => c.id === clientId));
+  return delay(read<Client>(KEYS.clients, CLIENTS).find((c) => c.id === clientId));
 }
 
 /**
@@ -61,7 +62,17 @@ export async function getClient(clientId: string): Promise<Client | undefined> {
  * a Rozalix super-admin).
  */
 export async function listClients(): Promise<Client[]> {
-  return delay(CLIENTS);
+  return delay(read<Client>(KEYS.clients, CLIENTS));
+}
+
+export async function updateClient(
+  id: string,
+  patch: Partial<Pick<Client, "logo" | "name" | "accent">>,
+): Promise<Client | undefined> {
+  const all = read<Client>(KEYS.clients, CLIENTS);
+  const next = all.map((c) => (c.id === id ? { ...c, ...patch } : c));
+  write(KEYS.clients, next);
+  return delay(next.find((c) => c.id === id));
 }
 
 // ---------------------------- Leads (CRM) ----------------------------

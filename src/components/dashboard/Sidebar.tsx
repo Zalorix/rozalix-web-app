@@ -53,6 +53,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             size="sm"
             initials={client?.initials ?? "··"}
             accent={client?.accent}
+            image={client?.logo}
           />
           <span className="min-w-0 flex-1">
             <span className="block truncate text-[13px] font-semibold">
@@ -81,7 +82,12 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                 }}
                 className="flex w-full items-center gap-2.5 px-3 py-2 text-left transition-colors hover:bg-[var(--color-slate-50)]"
               >
-                <Avatar size="sm" initials={c.initials} accent={c.accent} />
+                <Avatar
+                  size="sm"
+                  initials={c.initials}
+                  accent={c.accent}
+                  image={c.logo}
+                />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-[13px] font-medium">
                     {c.name}

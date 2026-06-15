@@ -27,6 +27,7 @@ import {
   upcomingSlots,
 } from "@/lib/assistant-store";
 import { formatSlot } from "@/lib/assistant-brain";
+import { readAvatar } from "@/lib/image";
 import { AgentAvatar, isImageIcon } from "@/components/chat/AgentAvatar";
 import { cn } from "@/lib/cn";
 import { Card } from "@/components/ui/Card";
@@ -44,33 +45,6 @@ const TABS: { id: Tab; label: string; icon: typeof BookOpen }[] = [
 ];
 
 const uid = (p: string) => `${p}_${Math.random().toString(36).slice(2, 10)}`;
-
-/** Read an image file, center-crop to a small square, return a data URL. */
-function readAvatar(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const img = new Image();
-      img.onload = () => {
-        const SIZE = 128;
-        const canvas = document.createElement("canvas");
-        canvas.width = SIZE;
-        canvas.height = SIZE;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return reject(new Error("no canvas context"));
-        const scale = Math.max(SIZE / img.width, SIZE / img.height);
-        const w = img.width * scale;
-        const h = img.height * scale;
-        ctx.drawImage(img, (SIZE - w) / 2, (SIZE - h) / 2, w, h);
-        resolve(canvas.toDataURL("image/jpeg", 0.85));
-      };
-      img.onerror = reject;
-      img.src = reader.result as string;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
 
 export default function AssistantPage() {
   const { client } = useWorkspace();

@@ -10,17 +10,32 @@ import {
   Check,
   Table2,
   MessageSquare,
+  ImagePlus,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
-import { useCurrentClient } from "@/lib/client-context";
-import { resetStore } from "@/lib/store";
+import { useWorkspace } from "@/lib/client-context";
+import { resetStore, updateClient } from "@/lib/store";
+import { readAvatar } from "@/lib/image";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
 
 export default function SettingsPage() {
   const { user } = useAuth();
-  const client = useCurrentClient();
+  const { client, refreshClients } = useWorkspace();
+
+  async function onLogoUpload(file: File) {
+    if (!client) return;
+    const logo = await readAvatar(file, 96);
+    await updateClient(client.id, { logo });
+    await refreshClients();
+  }
+
+  async function removeLogo() {
+    if (!client) return;
+    await updateClient(client.id, { logo: "" });
+    await refreshClients();
+  }
   const [copied, setCopied] = useState(false);
   const [widgetCopied, setWidgetCopied] = useState(false);
 
@@ -89,6 +104,41 @@ await fetch("https://api.rozalix.com/v1/leads", {
           <span className="ml-auto rounded-[var(--radius-pill)] bg-[var(--color-slate-100)] px-3 py-1 text-[12px] font-semibold text-[var(--color-slate-500)] capitalize">
             {user?.role}
           </span>
+        </div>
+      </Card>
+
+      {/* Brand logo */}
+      <Card>
+        <CardHeader title="Brand logo" />
+        <div className="flex flex-wrap items-center gap-4 px-5 py-5">
+          <Avatar
+            size="lg"
+            initials={client?.initials ?? "··"}
+            accent={client?.accent}
+            image={client?.logo}
+          />
+          <p className="min-w-[180px] flex-1 text-sm text-[var(--color-slate-500)]">
+            Your account avatar in the dashboard. A square image works best;
+            otherwise we show your initials.
+          </p>
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-slate-200)] bg-white px-4 py-2 text-sm font-medium text-[var(--color-slate-700)] transition-colors hover:border-[var(--color-slate-300)] hover:bg-[var(--color-slate-50)]">
+            <ImagePlus className="size-4" /> Upload
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) onLogoUpload(file);
+                e.target.value = "";
+              }}
+            />
+          </label>
+          {client?.logo && (
+            <Button variant="secondary" onClick={removeLogo}>
+              Remove
+            </Button>
+          )}
         </div>
       </Card>
 

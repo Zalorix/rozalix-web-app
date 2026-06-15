@@ -44,10 +44,12 @@ export interface Client {
   name: string;
   /** Primary domain of their live site (where the contact form lives). */
   domain: string;
-  /** Short brand initials for the avatar mark. */
+  /** Short brand initials for the avatar mark (fallback when no logo). */
   initials: string;
   /** Brand accent (defaults to Rozalix indigo). */
   accent: string;
+  /** Brand logo — image URL / data URL shown as the account avatar. */
+  logo?: string;
   /** The custom fields this client's contact form collects. */
   formSchema: FieldDef[];
 }

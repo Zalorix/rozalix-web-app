@@ -6,6 +6,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Rozalix Console",
   description: "CRM + CMS dashboard for Rozalix clients.",
+  icons: { icon: "/favicon.svg", apple: "/favicon.svg" },
 };
 
 export default function RootLayout({

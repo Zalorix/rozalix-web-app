@@ -19,6 +19,7 @@ export const CLIENTS: Client[] = [
     domain: "rozalix.com",
     initials: "RX",
     accent: "#4F46E5",
+    logo: "/favicon.svg",
     formSchema: [
       {
         key: "projectType",

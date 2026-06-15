@@ -280,6 +280,28 @@ export function ChatWidget({
           <Send className="size-4.5" />
         </button>
       </form>
+
+      {/* Powered by */}
+      <a
+        href="https://rozalix.com"
+        target="_blank"
+        rel="noreferrer"
+        className="flex items-center justify-center gap-1.5 border-t border-[var(--color-slate-100)] bg-white py-2 text-[11px] text-[var(--color-slate-400)] transition-colors hover:text-[var(--color-slate-600)]"
+      >
+        Powered by
+        <span
+          className="inline-flex size-3.5 items-center justify-center rounded-[4px] text-[9px] font-bold text-white"
+          style={{
+            background:
+              "linear-gradient(140deg, var(--color-indigo), var(--color-violet))",
+          }}
+        >
+          R
+        </span>
+        <span className="font-semibold text-[var(--color-slate-500)]">
+          Rozalix
+        </span>
+      </a>
     </div>
   );
 }

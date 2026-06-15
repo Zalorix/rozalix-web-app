@@ -40,10 +40,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     window.localStorage.setItem(ACTIVE_KEY, id);
   }
 
+  async function refreshClients() {
+    setClients(await listClients());
+  }
+
   const client = clients.find((c) => c.id === activeId) ?? null;
 
   const workspace = useMemo(
-    () => ({ client, clients, setActiveClientId }),
+    () => ({ client, clients, setActiveClientId, refreshClients }),
     [client, clients],
   );
 

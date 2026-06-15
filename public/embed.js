@@ -8,6 +8,7 @@
  * script's origin) hosting the chat. Optional attributes:
  *   data-accent="#4F46E5"   launcher colour
  *   data-position="left"    bottom-left instead of bottom-right
+ *   data-teaser="..."       teaser message text (set "" to disable)
  */
 (function () {
   "use strict";
@@ -28,13 +29,15 @@
   var key = script.getAttribute("data-rozalix-key") || "";
   var accent = script.getAttribute("data-accent") || "#4F46E5";
   var side = script.getAttribute("data-position") === "left" ? "left" : "right";
+  var teaserText = script.getAttribute("data-teaser");
+  if (teaserText === null) teaserText = "👋 Hi there! Have a question?";
   var origin = new URL(script.src).origin;
 
   if (window.__rozalixWidgetLoaded) return; // guard against double-include
   window.__rozalixWidgetLoaded = true;
 
   var open = false;
-  var bubble, panel;
+  var bubble, panel, ring, teaser;
 
   var ICON_CHAT =
     '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>';
@@ -45,7 +48,34 @@
     el.style.cssText = styles.join(";");
   }
 
+  function injectStyles() {
+    var s = document.createElement("style");
+    s.textContent =
+      "@keyframes rzx-ring{0%{transform:scale(1);opacity:.45}70%{transform:scale(1.7);opacity:0}100%{opacity:0}}" +
+      "@keyframes rzx-teaser-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}" +
+      "@media (prefers-reduced-motion: reduce){.rzx-ring{animation:none!important;display:none!important}}";
+    document.head.appendChild(s);
+  }
+
   function build() {
+    injectStyles();
+
+    // Pulse ring (sits behind the launcher)
+    ring = document.createElement("div");
+    ring.className = "rzx-ring";
+    css(ring, [
+      "position:fixed",
+      "z-index:2147482999",
+      side + ":20px",
+      "bottom:20px",
+      "width:58px",
+      "height:58px",
+      "border-radius:9999px",
+      "background:" + accent,
+      "pointer-events:none",
+      "animation:rzx-ring 2.6s ease-out infinite",
+    ]);
+
     // Panel (holds the iframe)
     panel = document.createElement("div");
     css(panel, [
@@ -67,7 +97,6 @@
       "display:none",
       "background:#fff",
     ]);
-
     var iframe = document.createElement("iframe");
     iframe.src = origin + "/embed?key=" + encodeURIComponent(key);
     iframe.title = "Chat";
@@ -81,7 +110,7 @@
     bubble.setAttribute("aria-label", "Open chat");
     css(bubble, [
       "position:fixed",
-      "z-index:2147483000",
+      "z-index:2147483001",
       side + ":20px",
       "bottom:20px",
       "width:58px",
@@ -106,13 +135,83 @@
     };
     bubble.onclick = toggle;
 
+    document.body.appendChild(ring);
     document.body.appendChild(panel);
     document.body.appendChild(bubble);
+
+    maybeShowTeaser();
+  }
+
+  function maybeShowTeaser() {
+    if (!teaserText) return;
+    try {
+      if (sessionStorage.getItem("rzx_teaser_done")) return;
+    } catch (e) {}
+
+    teaser = document.createElement("div");
+    css(teaser, [
+      "position:fixed",
+      "z-index:2147483000",
+      side + ":20px",
+      "bottom:90px",
+      "max-width:230px",
+      "background:#fff",
+      "color:#0F172A",
+      "font:500 13.5px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif",
+      "padding:12px 30px 12px 14px",
+      "border-radius:14px",
+      "border-bottom-" + side + "-radius:4px",
+      "box-shadow:0 12px 30px rgba(15,23,42,.18)",
+      "cursor:pointer",
+      "opacity:0",
+      "animation:rzx-teaser-in .25s ease forwards",
+    ]);
+    teaser.textContent = teaserText;
+    teaser.onclick = function () {
+      dismissTeaser();
+      if (!open) toggle();
+    };
+
+    var x = document.createElement("button");
+    x.type = "button";
+    x.setAttribute("aria-label", "Dismiss");
+    x.innerHTML = "&times;";
+    css(x, [
+      "position:absolute",
+      "top:6px",
+      "right:8px",
+      "border:0",
+      "background:transparent",
+      "color:#94A3B8",
+      "font-size:18px",
+      "line-height:1",
+      "cursor:pointer",
+      "padding:2px",
+    ]);
+    x.onclick = function (e) {
+      e.stopPropagation();
+      dismissTeaser();
+    };
+    teaser.appendChild(x);
+
+    setTimeout(function () {
+      if (!open && document.body) document.body.appendChild(teaser);
+    }, 1600);
+  }
+
+  function dismissTeaser() {
+    if (teaser && teaser.parentNode) teaser.parentNode.removeChild(teaser);
+    teaser = null;
+    try {
+      sessionStorage.setItem("rzx_teaser_done", "1");
+    } catch (e) {}
   }
 
   function toggle() {
     open = !open;
+    dismissTeaser();
     if (open) {
+      if (ring) ring.style.display = "none";
       panel.style.display = "block";
       void panel.offsetHeight; // reflow so the transition runs
       panel.style.opacity = "1";
@@ -120,6 +219,7 @@
       bubble.innerHTML = ICON_CLOSE;
       bubble.setAttribute("aria-label", "Close chat");
     } else {
+      if (ring) ring.style.display = "block";
       panel.style.opacity = "0";
       panel.style.transform = "translateY(8px) scale(.98)";
       bubble.innerHTML = ICON_CHAT;
