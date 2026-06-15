@@ -72,7 +72,19 @@
     s.textContent =
       "@keyframes rzx-teaser-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}" +
       "@keyframes rzx-teaser-pulse{0%{transform:scale(1)}50%{transform:scale(1.035)}100%{transform:scale(1)}}" +
-      "@media (prefers-reduced-motion: reduce){.rzx-teaser{animation:rzx-teaser-in .25s ease forwards!important}}";
+      "@media (prefers-reduced-motion: reduce){.rzx-teaser{animation:rzx-teaser-in .25s ease forwards!important}}" +
+      // On phones the panel becomes a full-screen sheet sized with dvh (so the
+      // input never hides behind the address bar), and the close button moves
+      // to the top corner so it doesn't sit over the chat input.
+      "@media (max-width:480px){" +
+        ".rzx-panel{inset:0!important;width:100%!important;max-width:none!important;" +
+          "height:100dvh!important;max-height:none!important;border-radius:0!important;" +
+          "transform-origin:center!important}" +
+        ".rzx-launcher.rzx-open{top:12px!important;bottom:auto!important;width:38px!important;" +
+          "height:38px!important;background:rgba(15,23,42,.28)!important;box-shadow:none!important;" +
+          "z-index:2147483002!important}" +
+        ".rzx-teaser{max-width:calc(100vw - 90px)!important}" +
+      "}";
     document.head.appendChild(s);
   }
 
@@ -81,6 +93,7 @@
 
     // Panel (holds the iframe)
     panel = document.createElement("div");
+    panel.className = "rzx-panel";
     css(panel, [
       "position:fixed",
       "z-index:2147483000",
@@ -89,7 +102,7 @@
       "width:400px",
       "max-width:calc(100vw - 40px)",
       "height:600px",
-      "max-height:calc(100vh - 120px)",
+      "max-height:calc(100dvh - 120px)",
       "border-radius:16px",
       "overflow:hidden",
       "box-shadow:0 18px 50px rgba(15,23,42,.22),0 4px 12px rgba(15,23,42,.10)",
@@ -110,6 +123,7 @@
     // Launcher bubble
     bubble = document.createElement("button");
     bubble.type = "button";
+    bubble.className = "rzx-launcher";
     bubble.setAttribute("aria-label", "Open chat");
     css(bubble, [
       "position:fixed",
@@ -218,11 +232,13 @@
       panel.style.opacity = "1";
       panel.style.transform = "translateY(0) scale(1)";
       bubble.innerHTML = ICON_CLOSE;
+      bubble.classList.add("rzx-open");
       bubble.setAttribute("aria-label", "Close chat");
     } else {
       panel.style.opacity = "0";
       panel.style.transform = "translateY(8px) scale(.98)";
       bubble.innerHTML = ICON_CHAT;
+      bubble.classList.remove("rzx-open");
       bubble.setAttribute("aria-label", "Open chat");
       setTimeout(function () {
         if (!open) panel.style.display = "none";
