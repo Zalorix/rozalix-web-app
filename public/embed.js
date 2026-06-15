@@ -37,7 +37,7 @@
   window.__rozalixWidgetLoaded = true;
 
   var open = false;
-  var bubble, panel, ring, teaser;
+  var bubble, panel, teaser;
 
   var ICON_CHAT =
     '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>';
@@ -51,30 +51,14 @@
   function injectStyles() {
     var s = document.createElement("style");
     s.textContent =
-      "@keyframes rzx-ring{0%{transform:scale(1);opacity:.45}70%{transform:scale(1.7);opacity:0}100%{opacity:0}}" +
       "@keyframes rzx-teaser-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}" +
-      "@media (prefers-reduced-motion: reduce){.rzx-ring{animation:none!important;display:none!important}}";
+      "@keyframes rzx-teaser-pulse{0%{transform:scale(1)}50%{transform:scale(1.035)}100%{transform:scale(1)}}" +
+      "@media (prefers-reduced-motion: reduce){.rzx-teaser{animation:rzx-teaser-in .25s ease forwards!important}}";
     document.head.appendChild(s);
   }
 
   function build() {
     injectStyles();
-
-    // Pulse ring (sits behind the launcher)
-    ring = document.createElement("div");
-    ring.className = "rzx-ring";
-    css(ring, [
-      "position:fixed",
-      "z-index:2147482999",
-      side + ":20px",
-      "bottom:20px",
-      "width:58px",
-      "height:58px",
-      "border-radius:9999px",
-      "background:" + accent,
-      "pointer-events:none",
-      "animation:rzx-ring 2.6s ease-out infinite",
-    ]);
 
     // Panel (holds the iframe)
     panel = document.createElement("div");
@@ -135,7 +119,6 @@
     };
     bubble.onclick = toggle;
 
-    document.body.appendChild(ring);
     document.body.appendChild(panel);
     document.body.appendChild(bubble);
 
@@ -149,6 +132,7 @@
     } catch (e) {}
 
     teaser = document.createElement("div");
+    teaser.className = "rzx-teaser";
     css(teaser, [
       "position:fixed",
       "z-index:2147483000",
@@ -164,7 +148,8 @@
       "box-shadow:0 12px 30px rgba(15,23,42,.18)",
       "cursor:pointer",
       "opacity:0",
-      "animation:rzx-teaser-in .25s ease forwards",
+      "transform-origin:bottom " + side,
+      "animation:rzx-teaser-in .25s ease forwards,rzx-teaser-pulse 2.4s ease-in-out .6s infinite",
     ]);
     teaser.textContent = teaserText;
     teaser.onclick = function () {
@@ -211,7 +196,6 @@
     open = !open;
     dismissTeaser();
     if (open) {
-      if (ring) ring.style.display = "none";
       panel.style.display = "block";
       void panel.offsetHeight; // reflow so the transition runs
       panel.style.opacity = "1";
@@ -219,7 +203,6 @@
       bubble.innerHTML = ICON_CLOSE;
       bubble.setAttribute("aria-label", "Close chat");
     } else {
-      if (ring) ring.style.display = "block";
       panel.style.opacity = "0";
       panel.style.transform = "translateY(8px) scale(.98)";
       bubble.innerHTML = ICON_CHAT;
