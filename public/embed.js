@@ -106,9 +106,11 @@
       "border:0",
       "cursor:pointer",
       "box-shadow:0 8px 20px rgba(15,23,42,.16)",
-      // Softened brand tint (mixed toward white) so the disc doesn't shout —
-      // the robot's own colours carry the attention.
-      "background:color-mix(in srgb," + accent + " 16%,#fff)",
+      // Soften the brand colour by lowering ITS opacity (mix toward transparent),
+      // so the disc calms down for any client accent — no fixed colours baked in.
+      "background:color-mix(in srgb," + accent + " 18%,transparent)",
+      "backdrop-filter:blur(4px)",
+      "-webkit-backdrop-filter:blur(4px)",
       "color:#fff",
       "display:flex",
       "align-items:center",
