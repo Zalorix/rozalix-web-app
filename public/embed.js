@@ -105,12 +105,10 @@
       "border-radius:9999px",
       "border:0",
       "cursor:pointer",
-      "box-shadow:0 8px 20px rgba(15,23,42,.16)",
-      // Soften the brand colour by lowering ITS opacity (mix toward transparent),
-      // so the disc calms down for any client accent — no fixed colours baked in.
-      "background:color-mix(in srgb," + accent + " 18%,transparent)",
-      "backdrop-filter:blur(4px)",
-      "-webkit-backdrop-filter:blur(4px)",
+      // Solid brand disc with an accent-tinted glow (driven off the client's
+      // own colour, so it adapts to any accent — no fixed colours baked in).
+      "background:" + accent,
+      "box-shadow:0 10px 26px color-mix(in srgb," + accent + " 45%,transparent)",
       "color:#fff",
       "display:flex",
       "align-items:center",
