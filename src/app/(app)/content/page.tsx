@@ -220,9 +220,11 @@ function Editor({
         </label>
       </div>
 
-      {/* Body — Notion-style block editor (its styling matches the live site) */}
+      {/* Body — Notion-style block editor (its styling matches the live site).
+          Fixed height + internal scroll keeps the page stable; the slash/format
+          menus float to the cursor. */}
       <div className="px-5 py-5">
-        <div className="rzx-content-editor min-h-[320px] rounded-[var(--radius-md)] border border-[var(--color-slate-200)] py-3">
+        <div className="rzx-content-editor scroll-slim h-[clamp(320px,55vh,620px)] overflow-y-auto rounded-[var(--radius-md)] border border-[var(--color-slate-200)] py-3">
           <BlockEditor initialMarkdown={page.body} onChange={setBody} />
         </div>
       </div>
