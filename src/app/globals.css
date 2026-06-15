@@ -68,6 +68,9 @@
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* App-like: no pull-to-refresh / rubber-band that would drag the fixed
+       shell (and the bottom tab bar) around. Inner regions scroll instead. */
+    overscroll-behavior: none;
   }
   h1, h2, h3, h4 {
     margin: 0;
