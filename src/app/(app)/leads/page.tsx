@@ -528,12 +528,12 @@ function LeadsPage() {
               />
             </div>
 
-            {/* Mobile-only "more below" fade — hidden once you reach the end */}
+            {/* Mobile-only "more below" feather — hidden once you reach the end */}
             <div
               aria-hidden
               className={cn(
-                "pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-white to-transparent transition-opacity duration-200 lg:hidden",
-                showFade ? "opacity-100" : "opacity-0",
+                "pointer-events-none absolute inset-x-0 bottom-0 h-7 bg-gradient-to-t from-white to-transparent transition-opacity duration-200 lg:hidden",
+                showFade ? "opacity-90" : "opacity-0",
               )}
             />
           </>

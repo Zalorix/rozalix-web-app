@@ -117,3 +117,7 @@
 @media (prefers-reduced-motion: reduce) {
   .rzx-backdrop-in, .rzx-slide-in-right { animation: none; }
 }
+/* Mobile: the detail sheet is full-screen — open it instantly, no slide. */
+@media (max-width: 1023px) {
+  .rzx-backdrop-in, .rzx-slide-in-right { animation: none; }
+}

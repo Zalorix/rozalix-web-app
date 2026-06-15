@@ -182,6 +182,19 @@ function ConversationsPage() {
   );
   const listItems = isDesktop ? pageItems : visible.slice(0, mobileCount);
 
+  // Mobile bottom feather: a "more below" hint, only while the list can scroll.
+  const mobileListRef = useRef<HTMLUListElement>(null);
+  const [showFade, setShowFade] = useState(false);
+  function updateFade() {
+    const el = mobileListRef.current;
+    setShowFade(!!el && el.scrollHeight - el.scrollTop - el.clientHeight > 8);
+  }
+  useEffect(() => {
+    updateFade();
+    window.addEventListener("resize", updateFade);
+    return () => window.removeEventListener("resize", updateFade);
+  }, [listItems.length, list, isDesktop]);
+
   const selected = useMemo(
     () => list?.find((c) => c.id === selectedId) ?? null,
     [list, selectedId],
@@ -291,7 +304,7 @@ function ConversationsPage() {
           className={cn(
             // Mobile: full-bleed, borderless list (edge-to-edge, scrollbar at
             // the screen edge). Desktop: the bordered 320px column.
-            "-mx-4 min-h-0 flex-1 flex-col overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:-mx-6 lg:mx-0 lg:flex lg:h-auto lg:min-h-0 lg:rounded-[var(--radius-lg)] lg:border lg:bg-white lg:shadow-[var(--shadow-card)]",
+            "relative -mx-4 min-h-0 flex-1 flex-col overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:-mx-6 lg:mx-0 lg:flex lg:h-auto lg:min-h-0 lg:rounded-[var(--radius-lg)] lg:border lg:bg-white lg:shadow-[var(--shadow-card)]",
             selected ? "hidden lg:flex" : "flex",
           )}
         >
@@ -312,7 +325,11 @@ function ConversationsPage() {
               description="Try clearing the status filter or search."
             />
           ) : (
-            <ul className="scroll-slim min-h-0 flex-1 overflow-y-auto bg-white lg:bg-transparent">
+            <ul
+              ref={mobileListRef}
+              onScroll={updateFade}
+              className="scroll-slim min-h-0 flex-1 overflow-y-auto bg-white lg:bg-transparent"
+            >
               {listItems.map((c) => (
                 <li key={c.id}>
                   <button
@@ -374,6 +391,15 @@ function ConversationsPage() {
               pageSize={pageSize}
             />
           </div>
+
+          {/* Mobile-only "more below" feather — hidden once you reach the end */}
+          <div
+            aria-hidden
+            className={cn(
+              "pointer-events-none absolute inset-x-0 bottom-0 h-7 bg-gradient-to-t from-white to-transparent transition-opacity duration-200 lg:hidden",
+              showFade ? "opacity-90" : "opacity-0",
+            )}
+          />
         </Card>
 
         {/* Transcript — full-screen thread on mobile, right pane on desktop */}
