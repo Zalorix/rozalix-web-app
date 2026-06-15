@@ -35,7 +35,7 @@ export function ChatWidget({
   fill?: boolean;
 }) {
   const [client, setClient] = useState<Client | null>(null);
-  const [agent, setAgent] = useState({ name: "Assistant", icon: "🤖" });
+  const [agent, setAgent] = useState({ name: "Assistant", icon: "robot" });
   const ctxRef = useRef<BrainContext | null>(null);
   const [conv, setConv] = useState<Conversation | null>(null);
   const [input, setInput] = useState("");
@@ -198,6 +198,7 @@ export function ChatWidget({
       >
         <AgentAvatar
           icon={agent.icon}
+          accent={accent}
           className="size-9 bg-white/20"
           emojiClassName="text-lg"
         />

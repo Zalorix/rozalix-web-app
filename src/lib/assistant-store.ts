@@ -23,7 +23,7 @@ const KEYS = {
   conversations: "rzx.conversations.v2",
   bookings: "rzx.bookings.v1",
   knowledge: "rzx.knowledge.v1",
-  rules: "rzx.rules.v3",
+  rules: "rzx.rules.v4",
   availability: "rzx.availability.v1",
 } as const;
 

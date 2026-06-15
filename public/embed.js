@@ -9,7 +9,8 @@
  *   data-accent="#4F46E5"   launcher colour
  *   data-position="left"    bottom-left instead of bottom-right
  *   data-teaser="..."       teaser message text (set "" to disable)
- *   data-icon="🤖"          launcher icon — match the in-chat agent avatar
+ *   data-icon="🙂"          override the launcher icon with an emoji
+ *                           (default is the Rozalix robot mark)
  */
 (function () {
   "use strict";
@@ -32,7 +33,7 @@
   var side = script.getAttribute("data-position") === "left" ? "left" : "right";
   var teaserText = script.getAttribute("data-teaser");
   if (teaserText === null) teaserText = "👋 Hi there! Have a question?";
-  var iconChar = script.getAttribute("data-icon") || "🤖";
+  var iconChar = script.getAttribute("data-icon"); // emoji override; default = robot mark
   var origin = new URL(script.src).origin;
 
   if (window.__rozalixWidgetLoaded) return; // guard against double-include
@@ -41,9 +42,24 @@
   var open = false;
   var bubble, panel, teaser;
 
-  // Launcher icon = the in-chat agent avatar (a robot emoji by default).
-  var ICON_CHAT =
-    '<span style="font-size:27px;line-height:1;display:block">' + iconChar + "</span>";
+  // Launcher icon = the in-chat agent avatar. Default is the Rozalix "Visor"
+  // robot mark (white body, accent visor reads as a cut-out to the disc, lighter
+  // ears). A data-icon emoji overrides it to match a custom agent icon.
+  var ROBOT_LITE = "color-mix(in srgb," + accent + " 45%,#fff)";
+  var ROBOT_SVG =
+    '<svg width="34" height="34" viewBox="0 0 24 24" aria-hidden="true">' +
+    '<circle cx="12" cy="2.7" r="1.2" fill="#fff"/>' +
+    '<rect x="11.25" y="3.3" width="1.5" height="2.5" rx=".7" fill="#fff"/>' +
+    '<rect x="2.6" y="9.6" width="1.6" height="4.2" rx=".8" fill="' + ROBOT_LITE + '"/>' +
+    '<rect x="19.8" y="9.6" width="1.6" height="4.2" rx=".8" fill="' + ROBOT_LITE + '"/>' +
+    '<rect x="4.5" y="5.8" width="15" height="12.4" rx="4.2" fill="#fff"/>' +
+    '<rect x="6.8" y="9.4" width="10.4" height="4.8" rx="2.4" fill="' + accent + '"/>' +
+    '<circle cx="9.7" cy="11.8" r="1.05" fill="#fff"/>' +
+    '<circle cx="14.3" cy="11.8" r="1.05" fill="#fff"/>' +
+    "</svg>";
+  var ICON_CHAT = iconChar
+    ? '<span style="font-size:27px;line-height:1;display:block">' + iconChar + "</span>"
+    : ROBOT_SVG;
   var ICON_CLOSE =
     '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
 

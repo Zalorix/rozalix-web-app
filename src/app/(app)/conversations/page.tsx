@@ -448,6 +448,7 @@ function ConversationsPage() {
                           <>
                             <AgentAvatar
                               icon={agent.icon}
+                              accent={client?.accent}
                               className="size-4 bg-white/25"
                               emojiClassName="text-[10px]"
                             />

@@ -3,6 +3,8 @@
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { Smile, ChevronDown } from "lucide-react";
+import { ROBOT_ICON } from "@/components/chat/AgentAvatar";
+import { RobotMark } from "@/components/chat/RobotMark";
 
 // Lazy-loaded so the (heavy) picker never ships with the customer chat widget —
 // it's only pulled in here in the dashboard when opened.
@@ -49,7 +51,14 @@ export function EmojiPickerButton({
         onClick={() => setOpen((o) => !o)}
         className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-slate-200)] bg-white px-2.5 py-2 text-[13px] font-medium text-[var(--color-slate-600)] transition-colors hover:border-[var(--color-slate-300)]"
       >
-        {isEmoji ? (
+        {value === ROBOT_ICON ? (
+          <span
+            className="flex size-4 items-center justify-center overflow-hidden rounded-full"
+            style={{ background: "var(--color-indigo)" }}
+          >
+            <RobotMark className="size-[78%]" />
+          </span>
+        ) : isEmoji ? (
           <span className="text-base leading-none">{value}</span>
         ) : (
           <Smile className="size-4 text-[var(--color-slate-400)]" />
