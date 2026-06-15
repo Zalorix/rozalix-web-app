@@ -132,9 +132,8 @@
 
   function maybeShowTeaser() {
     if (!teaserText) return;
-    try {
-      if (sessionStorage.getItem("rzx_teaser_done")) return;
-    } catch (e) {}
+    // Intentionally not persisted — the teaser greets the visitor on every
+    // fresh page load. Dismissing/opening only hides it for the current view.
 
     teaser = document.createElement("div");
     teaser.className = "rzx-teaser";
@@ -192,9 +191,6 @@
   function dismissTeaser() {
     if (teaser && teaser.parentNode) teaser.parentNode.removeChild(teaser);
     teaser = null;
-    try {
-      sessionStorage.setItem("rzx_teaser_done", "1");
-    } catch (e) {}
   }
 
   function toggle() {
