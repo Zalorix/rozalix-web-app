@@ -39,7 +39,7 @@ export function titleForPath(pathname: string): string {
   return item?.label ?? "Dashboard";
 }
 
-function greeting(): string {
+export function greeting(): string {
   const h = new Date().getHours();
   if (h < 12) return "Good morning";
   if (h < 18) return "Good afternoon";
