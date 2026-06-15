@@ -34,9 +34,9 @@ export function AgentAvatar({
         "flex shrink-0 items-center justify-center overflow-hidden rounded-full",
         className,
       )}
-      // The robot sits on a solid accent disc so the white body pops; any
-      // passed style still wins (e.g. the gradient on the settings preview).
-      style={isRobot ? { background: accent, ...style } : style}
+      // The circle background comes from the caller (e.g. the frosted bg-white/20
+      // in the chat header), same as for emoji/image icons.
+      style={style}
     >
       {isRobot ? (
         <RobotMark accent={accent} className="size-[78%]" />
