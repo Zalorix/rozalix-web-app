@@ -385,10 +385,13 @@ function ConversationsPage() {
           </div>
         </Card>
 
-        {/* Transcript */}
+        {/* Transcript — full-screen thread on mobile, right pane on desktop */}
         {selected ? (
-          <Card className="flex min-h-0 flex-1 flex-col overflow-hidden lg:h-auto lg:min-h-0">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--color-slate-100)] px-4 py-3.5 sm:px-5">
+          <Card className="fixed inset-0 z-50 flex flex-col overflow-hidden rounded-none border-0 shadow-none lg:static lg:z-auto lg:h-auto lg:min-h-0 lg:flex-1 lg:rounded-[var(--radius-lg)] lg:border lg:shadow-[var(--shadow-card)]">
+            <div
+              className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--color-slate-100)] px-4 py-3.5 sm:px-5"
+              style={{ paddingTop: "max(0.875rem, env(safe-area-inset-top))" }}
+            >
               <button
                 onClick={() => setSelectedId(null)}
                 aria-label="Back"
@@ -497,7 +500,10 @@ function ConversationsPage() {
             </div>
 
             {/* Owner controls */}
-            <div className="border-t border-[var(--color-slate-100)] bg-white px-4 py-3">
+            <div
+              className="border-t border-[var(--color-slate-100)] bg-white px-4 py-3"
+              style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+            >
               {selected.assignee === "ai" && (
                 <div className="mb-2 flex items-center justify-between gap-3 rounded-[var(--radius-md)] bg-[var(--color-indigo-50)] px-3 py-2 text-[12.5px] text-[var(--color-indigo-deeper)]">
                   <span className="flex items-center gap-1.5">
