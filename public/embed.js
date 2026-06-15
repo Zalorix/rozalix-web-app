@@ -9,6 +9,7 @@
  *   data-accent="#4F46E5"   launcher colour
  *   data-position="left"    bottom-left instead of bottom-right
  *   data-teaser="..."       teaser message text (set "" to disable)
+ *   data-icon="🤖"          launcher icon — match the in-chat agent avatar
  */
 (function () {
   "use strict";
@@ -31,6 +32,7 @@
   var side = script.getAttribute("data-position") === "left" ? "left" : "right";
   var teaserText = script.getAttribute("data-teaser");
   if (teaserText === null) teaserText = "👋 Hi there! Have a question?";
+  var iconChar = script.getAttribute("data-icon") || "🤖";
   var origin = new URL(script.src).origin;
 
   if (window.__rozalixWidgetLoaded) return; // guard against double-include
@@ -39,8 +41,9 @@
   var open = false;
   var bubble, panel, teaser;
 
+  // Launcher icon = the in-chat agent avatar (a robot emoji by default).
   var ICON_CHAT =
-    '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>';
+    '<span style="font-size:27px;line-height:1;display:block">' + iconChar + "</span>";
   var ICON_CLOSE =
     '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
 

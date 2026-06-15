@@ -68,7 +68,7 @@ export const RULES: AssistantRules[] = [
   {
     clientId: "rozalix-landing",
     agentName: "Rio",
-    agentIcon: "✨",
+    agentIcon: "🤖",
     greeting:
       "Hi! 👋 Thanks for visiting Rozalix. I can answer questions about our websites and pricing, or book you a quick call with the team. What are you working on?",
     persona:

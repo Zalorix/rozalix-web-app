@@ -35,7 +35,7 @@ export function ChatWidget({
   fill?: boolean;
 }) {
   const [client, setClient] = useState<Client | null>(null);
-  const [agent, setAgent] = useState({ name: "Assistant", icon: "✨" });
+  const [agent, setAgent] = useState({ name: "Assistant", icon: "🤖" });
   const ctxRef = useRef<BrainContext | null>(null);
   const [conv, setConv] = useState<Conversation | null>(null);
   const [input, setInput] = useState("");
@@ -289,15 +289,32 @@ export function ChatWidget({
         className="flex items-center justify-center gap-1.5 border-t border-[var(--color-slate-100)] bg-white py-2 text-[11px] text-[var(--color-slate-400)] transition-colors hover:text-[var(--color-slate-600)]"
       >
         Powered by
-        <span
-          className="inline-flex size-3.5 items-center justify-center rounded-[4px] text-[9px] font-bold text-white"
-          style={{
-            background:
-              "linear-gradient(140deg, var(--color-indigo), var(--color-violet))",
-          }}
+        <svg
+          viewBox="21 18 63 63"
+          fill="none"
+          aria-hidden="true"
+          className="size-4 text-[var(--color-indigo)]"
         >
-          R
-        </span>
+          <rect x="30.5" y="19.5" width="11" height="11" fill="currentColor" />
+          <rect x="30.5" y="45.5" width="11" height="11" fill="currentColor" />
+          <g
+            stroke="currentColor"
+            strokeWidth={11}
+            strokeLinecap="butt"
+            strokeLinejoin="round"
+            strokeDasharray="18 7"
+          >
+            <path d="M36 25 V75" />
+            <path d="M36 25 H50 a13 13 0 0 1 0 26 H36" />
+          </g>
+          <path
+            d="M50 51 L70 75"
+            stroke="var(--color-violet)"
+            strokeWidth={11}
+            strokeLinecap="butt"
+            strokeDasharray="18 7"
+          />
+        </svg>
         <span className="font-semibold text-[var(--color-slate-500)]">
           Rozalix
         </span>
