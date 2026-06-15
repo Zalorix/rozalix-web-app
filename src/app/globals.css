@@ -121,3 +121,29 @@
 @media (max-width: 1023px) {
   .rzx-backdrop-in, .rzx-slide-in-right { animation: none; }
 }
+
+/* Theme the BlockNote content editor to match the site's typography, so the
+   editor *is* the preview (what you edit is what ships). */
+.rzx-content-editor .bn-default-styles {
+  font-family: var(--font-sans);
+  font-size: 15px;
+}
+.rzx-content-editor .bn-editor { padding-inline: 36px; }
+.rzx-content-editor .bn-block-content[data-content-type="paragraph"] { line-height: 1.625; }
+/* Heading sizes — BlockNote scales font-size from the --level variable. */
+.rzx-content-editor [data-content-type="heading"] { --level: 1.5rem; }
+.rzx-content-editor [data-content-type="heading"][data-level="2"] { --level: 1.125rem; }
+.rzx-content-editor [data-content-type="heading"][data-level="3"] { --level: 1rem; }
+.rzx-content-editor .bn-block-content[data-content-type="heading"] {
+  font-family: var(--font-display) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em;
+  color: var(--color-ink-900);
+}
+.rzx-content-editor .bn-inline-content a {
+  color: var(--color-indigo);
+  text-decoration: underline;
+}
+@media (max-width: 640px) {
+  .rzx-content-editor .bn-editor { padding-inline: 18px; }
+}

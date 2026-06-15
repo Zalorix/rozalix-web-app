@@ -3,12 +3,11 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSearchParams, useRouter } from "next/navigation";
-import { FileText, Check, Eye, Pencil, Globe } from "lucide-react";
+import { FileText, Check, Globe } from "lucide-react";
 import type { ContentPage, ContentStatus } from "@/lib/types";
 import { useCurrentClient } from "@/lib/client-context";
 import { listContent, updateContent } from "@/lib/store";
 import { formatDateTime } from "@/lib/format";
-import { renderMarkdown } from "@/lib/markdown";
 import { cn } from "@/lib/cn";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -154,7 +153,6 @@ function Editor({
   const [title, setTitle] = useState(page.title);
   const [body, setBody] = useState(page.body);
   const [status, setStatus] = useState<ContentStatus>(page.status);
-  const [tab, setTab] = useState<"edit" | "preview">("edit");
   const [saving, setSaving] = useState(false);
   const [savedFlash, setSavedFlash] = useState(false);
 
@@ -191,14 +189,9 @@ function Editor({
 
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-3 border-b border-[var(--color-slate-100)] bg-[var(--color-slate-50)] px-5 py-2.5">
-        <div className="flex rounded-[var(--radius-md)] border border-[var(--color-slate-200)] bg-white p-0.5">
-          <TabBtn active={tab === "edit"} onClick={() => setTab("edit")}>
-            <Pencil className="size-3.5" /> Edit
-          </TabBtn>
-          <TabBtn active={tab === "preview"} onClick={() => setTab("preview")}>
-            <Eye className="size-3.5" /> Preview
-          </TabBtn>
-        </div>
+        <span className="text-[12px] text-[var(--color-slate-400)]">
+          Type <kbd className="rounded bg-white px-1.5 py-0.5 font-[var(--font-mono)] text-[11px] text-[var(--color-slate-500)] ring-1 ring-[var(--color-slate-200)]">/</kbd> for blocks
+        </span>
 
         <label className="flex cursor-pointer items-center gap-2 text-[13px] font-medium text-[var(--color-slate-600)]">
           <Globe className="size-4 text-[var(--color-slate-400)]" />
@@ -227,18 +220,11 @@ function Editor({
         </label>
       </div>
 
-      {/* Body */}
+      {/* Body — Notion-style block editor (its styling matches the live site) */}
       <div className="px-5 py-5">
-        {tab === "edit" ? (
-          <div className="min-h-[320px] rounded-[var(--radius-md)] border border-[var(--color-slate-200)] py-3">
-            <BlockEditor initialMarkdown={page.body} onChange={setBody} />
-          </div>
-        ) : (
-          <div className="min-h-[300px] rounded-[var(--radius-md)] border border-[var(--color-slate-200)] px-5 py-4">
-            <h1 className="mb-2 text-2xl font-semibold">{title}</h1>
-            {renderMarkdown(body)}
-          </div>
-        )}
+        <div className="rzx-content-editor min-h-[320px] rounded-[var(--radius-md)] border border-[var(--color-slate-200)] py-3">
+          <BlockEditor initialMarkdown={page.body} onChange={setBody} />
+        </div>
       </div>
 
       {/* Footer */}
@@ -261,29 +247,5 @@ function Editor({
         </Button>
       </div>
     </Card>
-  );
-}
-
-function TabBtn({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-[6px] px-3 py-1.5 text-[13px] font-medium transition-colors",
-        active
-          ? "bg-[var(--color-indigo-50)] text-[var(--color-indigo-deeper)]"
-          : "text-[var(--color-slate-500)] hover:text-[var(--color-ink-900)]",
-      )}
-    >
-      {children}
-    </button>
   );
 }
