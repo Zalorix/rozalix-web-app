@@ -128,7 +128,10 @@ export function LeadDrawer({
       />
       <aside className="rzx-slide-in-right scroll-slim absolute inset-y-0 right-0 flex w-full max-w-[460px] flex-col overflow-y-auto bg-white shadow-[var(--shadow-lift)]">
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-start gap-3 border-b border-[var(--color-slate-100)] bg-white px-6 py-5">
+        <div
+          className="sticky top-0 z-10 flex items-start gap-3 border-b border-[var(--color-slate-100)] bg-white px-6 py-5"
+          style={{ paddingTop: "max(1.25rem, env(safe-area-inset-top))" }}
+        >
           <Avatar
             size="lg"
             initials={initials(lead.firstName, lead.lastName)}
@@ -151,6 +154,24 @@ export function LeadDrawer({
         </div>
 
         <div className="flex-1 space-y-6 px-6 py-6">
+          {/* Quick actions — call or email the customer in one tap */}
+          <div className="flex gap-2.5">
+            <a
+              href={`tel:${lead.phone}`}
+              className="flex flex-1 items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-indigo)] px-3 py-2.5 text-[13.5px] font-semibold text-white shadow-[0_2px_6px_rgba(79,70,229,.3)] transition-opacity hover:opacity-90"
+            >
+              <Phone className="size-4" /> Call
+            </a>
+            {lead.email && (
+              <a
+                href={`mailto:${lead.email}`}
+                className="flex flex-1 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-slate-200)] px-3 py-2.5 text-[13.5px] font-semibold text-[var(--color-slate-700)] transition-colors hover:bg-[var(--color-slate-50)]"
+              >
+                <Mail className="size-4" /> Email
+              </a>
+            )}
+          </div>
+
           {/* Customer summary (AI) — a fast read across form data + chat. */}
           <section
             className="rounded-[var(--radius-lg)] border border-[var(--color-indigo-100)] p-4"
@@ -362,7 +383,10 @@ export function LeadDrawer({
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 flex items-center justify-between gap-3 border-t border-[var(--color-slate-100)] bg-white px-6 py-4">
+        <div
+          className="sticky bottom-0 flex items-center justify-between gap-3 border-t border-[var(--color-slate-100)] bg-white px-6 py-4"
+          style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+        >
           <LeadStatusBadge status={lead.status} />
           <Button size="sm" variant="danger" onClick={remove}>
             <Trash2 className="size-4" /> Delete
