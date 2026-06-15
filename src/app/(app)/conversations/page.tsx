@@ -218,9 +218,35 @@ function ConversationsPage() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4">
-      {/* Status quick filters + a Filters popover for the rest */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="no-scrollbar flex gap-1.5 overflow-x-auto sm:min-w-0 sm:flex-1">
+      {/* Filters popover first, then the status quick filters (scroll), then preview */}
+      <div className="flex items-center gap-2">
+        <FilterPopover activeCount={activeFilters} onClear={() => setQuery("")}>
+          <Label htmlFor="conv-search">Search</Label>
+          <div className="relative mb-3">
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-[var(--color-slate-400)]" />
+            <Input
+              id="conv-search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Name, phone, message…"
+              className="pl-9"
+            />
+          </div>
+          <div className="mt-1 border-t border-[var(--color-slate-100)] pt-3">
+            <Label>Rows per page</Label>
+            <Select
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+            >
+              {[10, 20, 50, 100].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </Select>
+          </div>
+        </FilterPopover>
+        <div className="no-scrollbar flex min-w-0 flex-1 gap-1.5 overflow-x-auto">
           {CONV_FILTERS.map((f) => (
             <button
               key={f}
@@ -246,46 +272,14 @@ function ConversationsPage() {
             </button>
           ))}
         </div>
-
-        <div className="flex shrink-0 items-center gap-3">
-          <FilterPopover
-            activeCount={activeFilters}
-            onClear={() => setQuery("")}
-          >
-            <Label htmlFor="conv-search">Search</Label>
-            <div className="relative mb-3">
-              <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-[var(--color-slate-400)]" />
-              <Input
-                id="conv-search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Name, phone, message…"
-                className="pl-9"
-              />
-            </div>
-            <div className="mt-1 border-t border-[var(--color-slate-100)] pt-3">
-              <Label>Rows per page</Label>
-              <Select
-                value={pageSize}
-                onChange={(e) => setPageSize(Number(e.target.value))}
-              >
-                {[10, 20, 50, 100].map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </Select>
-            </div>
-          </FilterPopover>
-          <Link
-            href="/chat-preview"
-            target="_blank"
-            className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[var(--color-indigo)] hover:underline"
-          >
-            <ExternalLink className="size-4" />
-            <span className="hidden sm:inline">Open chat preview</span>
-          </Link>
-        </div>
+        <Link
+          href="/chat-preview"
+          target="_blank"
+          className="inline-flex shrink-0 items-center gap-1.5 text-[13px] font-medium text-[var(--color-indigo)] hover:underline"
+        >
+          <ExternalLink className="size-4" />
+          <span className="hidden sm:inline">Open chat preview</span>
+        </Link>
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col gap-4 lg:grid lg:grid-cols-[320px_minmax(0,1fr)] lg:grid-rows-1 lg:gap-5">

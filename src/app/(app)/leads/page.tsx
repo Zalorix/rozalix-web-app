@@ -220,35 +220,8 @@ function LeadsPage() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-5">
-      {/* Pipeline status quick filters + a Filters popover for the rest */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="no-scrollbar flex gap-1.5 overflow-x-auto sm:min-w-0 sm:flex-1">
-          {(["all", ...LEAD_STATUSES] as Filter[]).map((f) => (
-            <button
-              key={f}
-              onClick={() => setStatus(f)}
-              className={cn(
-                "inline-flex shrink-0 items-center gap-1.5 rounded-[var(--radius-pill)] border px-3 py-1.5 text-[13px] font-medium transition-colors",
-                status === f
-                  ? "border-[var(--color-indigo)] text-[var(--color-indigo-deeper)]"
-                  : "border-[var(--color-slate-200)] text-[var(--color-slate-600)] hover:border-[var(--color-slate-300)]",
-              )}
-            >
-              {filterLabel[f]}
-              <span
-                className={cn(
-                  "rounded-full px-1.5 text-[11px] font-semibold",
-                  status === f
-                    ? "bg-[var(--color-indigo-50)] text-[var(--color-indigo-deeper)]"
-                    : "bg-[var(--color-slate-100)] text-[var(--color-slate-500)]",
-                )}
-              >
-                {counts[f]}
-              </span>
-            </button>
-          ))}
-        </div>
-
+      {/* Filters popover first, then the pipeline-status quick filters (scroll) */}
+      <div className="flex items-center gap-1.5">
         <FilterPopover activeCount={activeFilters} onClear={clearFilters}>
           <Label htmlFor="lead-search">Search</Label>
           <div className="relative mb-3">
@@ -298,6 +271,32 @@ function LeadsPage() {
             </Select>
           </div>
         </FilterPopover>
+        <div className="no-scrollbar flex min-w-0 flex-1 gap-1.5 overflow-x-auto">
+          {(["all", ...LEAD_STATUSES] as Filter[]).map((f) => (
+            <button
+              key={f}
+              onClick={() => setStatus(f)}
+              className={cn(
+                "inline-flex shrink-0 items-center gap-1.5 rounded-[var(--radius-pill)] border px-3 py-1.5 text-[13px] font-medium transition-colors",
+                status === f
+                  ? "border-[var(--color-indigo)] text-[var(--color-indigo-deeper)]"
+                  : "border-[var(--color-slate-200)] text-[var(--color-slate-600)] hover:border-[var(--color-slate-300)]",
+              )}
+            >
+              {filterLabel[f]}
+              <span
+                className={cn(
+                  "rounded-full px-1.5 text-[11px] font-semibold",
+                  status === f
+                    ? "bg-[var(--color-indigo-50)] text-[var(--color-indigo-deeper)]"
+                    : "bg-[var(--color-slate-100)] text-[var(--color-slate-500)]",
+                )}
+              >
+                {counts[f]}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Table — only the body scrolls; the toolbar (above) and header stay. */}
