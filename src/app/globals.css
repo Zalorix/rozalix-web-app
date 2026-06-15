@@ -95,3 +95,18 @@
   }
   .scroll-slim::-webkit-scrollbar-thumb:hover { background: var(--color-slate-400); background-clip: content-box; }
 }
+
+/* Slide-over / drawer entrance animations */
+@keyframes rzx-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes rzx-slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.rzx-backdrop-in { animation: rzx-fade-in 0.2s ease both; }
+.rzx-slide-in-right { animation: rzx-slide-in-right 0.26s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .rzx-backdrop-in, .rzx-slide-in-right { animation: none; }
+}

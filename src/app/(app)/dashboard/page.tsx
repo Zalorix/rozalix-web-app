@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Inbox, Sparkles, Trophy, FileText, ArrowRight } from "lucide-react";
 import type { Lead, ContentPage } from "@/lib/types";
-import { useAuth } from "@/lib/auth";
 import { useWorkspace } from "@/lib/client-context";
 import { listLeads, listContent } from "@/lib/store";
 import { fullName, initials, timeAgo, formatDate } from "@/lib/format";
@@ -18,7 +17,6 @@ import { EmptyState, Spinner } from "@/components/ui/EmptyState";
 import { LeadDrawer } from "@/components/dashboard/LeadDrawer";
 
 export default function DashboardPage() {
-  const { user } = useAuth();
   const { client } = useWorkspace();
   const [leads, setLeads] = useState<Lead[] | null>(null);
   const [pages, setPages] = useState<ContentPage[] | null>(null);
@@ -62,16 +60,6 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Greeting */}
-      <div>
-        <h2 className="text-xl font-semibold">
-          {greeting()}, {user?.name?.split(" ")[0]}
-        </h2>
-        <p className="mt-1 text-sm text-[var(--color-slate-500)]">
-          Here&apos;s what&apos;s happening with {client?.name ?? "your site"}.
-        </p>
-      </div>
-
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <Stat
@@ -249,11 +237,4 @@ function Stat({
       </div>
     </Card>
   );
-}
-
-function greeting(): string {
-  const h = new Date().getHours();
-  if (h < 12) return "Good morning";
-  if (h < 18) return "Good afternoon";
-  return "Good evening";
 }

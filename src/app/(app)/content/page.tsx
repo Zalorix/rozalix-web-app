@@ -70,13 +70,6 @@ function ContentManager() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h2 className="text-xl font-semibold">Content</h2>
-        <p className="mt-1 text-sm text-[var(--color-slate-500)]">
-          Edit the pages on {client?.name ?? "your site"} without touching code.
-        </p>
-      </div>
-
       <div className="grid gap-5 lg:grid-cols-[260px_1fr]">
         {/* Page list */}
         <Card className="h-max overflow-hidden">

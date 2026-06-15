@@ -3,19 +3,23 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronsUpDown, LogOut, Check } from "lucide-react";
+import { ChevronsUpDown, LogOut, Check, Settings } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { NAV_ITEMS } from "@/lib/nav";
+import { NAV_ITEMS, SETTINGS_ITEM } from "@/lib/nav";
 import { useAuth } from "@/lib/auth";
 import { useWorkspace } from "@/lib/client-context";
+import { useNavBadges } from "@/lib/use-nav-badges";
 import { Avatar } from "@/components/ui/Avatar";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
   const { client, clients, setActiveClientId } = useWorkspace();
+  const badges = useNavBadges();
 
   const [switcherOpen, setSwitcherOpen] = useState(false);
+  const [confirmOut, setConfirmOut] = useState(false);
   const switcherRef = useRef<HTMLDivElement>(null);
   const multi = clients.length > 1;
 
@@ -101,6 +105,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           const active =
             pathname === item.href || pathname.startsWith(`${item.href}/`);
           const Icon = item.icon;
+          const badge = badges[item.href];
           return (
             <Link
               key={item.href}
@@ -122,6 +127,18 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                 )}
               />
               {item.label}
+              {badge && badge.count > 0 && (
+                <span
+                  className={cn(
+                    "ml-auto inline-flex min-w-5 items-center justify-center rounded-[var(--radius-pill)] px-1.5 text-[11px] font-bold",
+                    badge.urgent
+                      ? "bg-[var(--color-error)] text-white"
+                      : "bg-[var(--color-slate-200)] text-[var(--color-slate-600)]",
+                  )}
+                >
+                  {badge.count}
+                </span>
+              )}
             </Link>
           );
         })}
@@ -147,9 +164,22 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               {user?.email}
             </span>
           </span>
+          <Link
+            href={SETTINGS_ITEM.href}
+            onClick={onNavigate}
+            title="Settings"
+            className={cn(
+              "flex size-8 items-center justify-center rounded-[var(--radius-md)] transition-colors",
+              pathname === SETTINGS_ITEM.href
+                ? "bg-[var(--color-indigo-50)] text-[var(--color-indigo)]"
+                : "text-[var(--color-slate-400)] hover:bg-[var(--color-slate-100)] hover:text-[var(--color-ink-900)]",
+            )}
+          >
+            <Settings className="size-[18px]" />
+          </Link>
           <button
             type="button"
-            onClick={signOut}
+            onClick={() => setConfirmOut(true)}
             title="Sign out"
             className="flex size-8 items-center justify-center rounded-[var(--radius-md)] text-[var(--color-slate-400)] transition-colors hover:bg-[var(--color-slate-100)] hover:text-[var(--color-error)]"
           >
@@ -157,6 +187,19 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           </button>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmOut}
+        icon={<LogOut className="size-5" />}
+        title="Sign out?"
+        description="You'll need to sign back in to access the dashboard."
+        confirmLabel="Sign out"
+        onConfirm={() => {
+          setConfirmOut(false);
+          signOut();
+        }}
+        onCancel={() => setConfirmOut(false)}
+      />
     </div>
   );
 }

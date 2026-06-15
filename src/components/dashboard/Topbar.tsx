@@ -2,7 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import { Menu, ExternalLink } from "lucide-react";
-import { titleForPath } from "@/lib/nav";
+import { titleForPath, subtitleForPath } from "@/lib/nav";
+import { useAuth } from "@/lib/auth";
 import type { Client } from "@/lib/types";
 
 export function Topbar({
@@ -13,20 +14,35 @@ export function Topbar({
   onMenu: () => void;
 }) {
   const pathname = usePathname();
+  const { user } = useAuth();
   const title = titleForPath(pathname);
+  const subtitle = subtitleForPath(
+    pathname,
+    client?.name,
+    user?.name?.split(" ")[0],
+  );
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-[var(--color-slate-200)] bg-white/85 px-4 backdrop-blur-md sm:px-6">
+    <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-3 border-b border-[var(--color-slate-200)] bg-white/85 px-4 backdrop-blur-md sm:px-6">
       <button
         type="button"
         onClick={onMenu}
-        className="flex size-9 items-center justify-center rounded-[var(--radius-md)] text-[var(--color-slate-500)] hover:bg-[var(--color-slate-100)] lg:hidden"
+        className="flex size-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] text-[var(--color-slate-500)] hover:bg-[var(--color-slate-100)] lg:hidden"
         aria-label="Open menu"
       >
         <Menu className="size-5" />
       </button>
 
-      <h1 className="text-[17px] font-semibold">{title}</h1>
+      <div className="min-w-0">
+        <h1 className="truncate text-[16px] leading-tight font-semibold">
+          {title}
+        </h1>
+        {subtitle && (
+          <p className="truncate text-[12px] leading-tight text-[var(--color-slate-500)]">
+            {subtitle}
+          </p>
+        )}
+      </div>
 
       {client && (
         <a

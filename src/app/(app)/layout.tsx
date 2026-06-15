@@ -57,9 +57,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <WorkspaceProvider value={workspace}>
-      <div className="flex min-h-screen">
+      {/* Fixed-viewport shell: the window never scrolls — each page scrolls
+          its own content (or just its table). */}
+      <div className="flex h-dvh overflow-hidden">
         {/* Desktop sidebar */}
-        <aside className="sticky top-0 hidden h-screen lg:block">
+        <aside className="hidden h-dvh lg:block">
           <Sidebar onNavigate={() => setDrawerOpen(false)} />
         </aside>
 
@@ -77,10 +79,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         )}
 
         {/* Main column */}
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
           <Topbar client={client} onMenu={() => setDrawerOpen(true)} />
-          <main className="scroll-slim flex-1 px-4 py-6 sm:px-6 lg:px-8">
-            <div className="mx-auto w-full max-w-6xl">{children}</div>
+          <main className="scroll-slim min-h-0 flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
+            <div className="mx-auto flex h-full w-full max-w-6xl flex-col">
+              {children}
+            </div>
           </main>
         </div>
       </div>

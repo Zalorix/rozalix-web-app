@@ -1,4 +1,4 @@
-import type { Lead, ContentPage, Client } from "./types";
+import type { Lead, LeadStatus, ContentPage, Client } from "./types";
 import { CLIENTS, LEADS, CONTENT_PAGES } from "./seed";
 
 // ============================================================
@@ -15,7 +15,7 @@ import { CLIENTS, LEADS, CONTENT_PAGES } from "./seed";
 // Bump the version suffix whenever the seed shape changes so existing
 // browsers re-seed instead of choking on stale records.
 const KEYS = {
-  leads: "rzx.leads.v2",
+  leads: "rzx.leads.v4",
   content: "rzx.content.v2",
 } as const;
 
@@ -87,6 +87,66 @@ export async function deleteLead(id: string): Promise<void> {
     KEYS.leads,
     all.filter((l) => l.id !== id),
   );
+  return delay(undefined);
+}
+
+// Pipeline ordering so AI activity only ever advances a lead, never downgrades.
+const STATUS_RANK: Record<LeadStatus, number> = {
+  new: 0,
+  contacted: 1,
+  qualified: 2,
+  won: 3,
+  lost: 0,
+};
+
+/**
+ * Tie a web-chat conversation to the CRM, keyed by phone (the canonical
+ * customer identity). Creates the lead if new, otherwise advances its status
+ * — never downgrading, and never touching a won/lost lead. This is how the
+ * AI receptionist moves a lead to Contacted (on conversation) or Qualified
+ * (on booking).
+ */
+export async function upsertLeadFromChat(input: {
+  clientId: string;
+  name: string;
+  phone: string;
+  message: string;
+  status: Extract<LeadStatus, "contacted" | "qualified">;
+}): Promise<void> {
+  if (!input.phone) return delay(undefined);
+  const all = read<Lead>(KEYS.leads, LEADS);
+  const [firstName, ...rest] = (input.name || "Website Visitor").split(" ");
+  const existing = all.find(
+    (l) => l.clientId === input.clientId && l.phone === input.phone,
+  );
+
+  if (existing) {
+    if (
+      existing.status !== "won" &&
+      existing.status !== "lost" &&
+      STATUS_RANK[input.status] > STATUS_RANK[existing.status]
+    ) {
+      existing.status = input.status;
+    }
+    if (!existing.notes && input.message)
+      existing.notes = `Via AI web chat: ${input.message}`;
+    write(KEYS.leads, all);
+  } else {
+    all.unshift({
+      id: `ld_${Math.random().toString(36).slice(2, 8)}`,
+      clientId: input.clientId,
+      firstName: firstName || "Website",
+      lastName: rest.join(" "),
+      email: "",
+      phone: input.phone,
+      message: input.message || "Started a conversation via web chat.",
+      fields: {},
+      status: input.status,
+      createdAt: new Date().toISOString(),
+      notes: "Source: AI web chat.",
+    });
+    write(KEYS.leads, all);
+  }
   return delay(undefined);
 }
 

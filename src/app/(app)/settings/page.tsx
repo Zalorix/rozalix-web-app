@@ -1,7 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Globe, Mail, Code2, RotateCcw, Copy, Check, Table2 } from "lucide-react";
+import {
+  Globe,
+  Mail,
+  Code2,
+  RotateCcw,
+  Copy,
+  Check,
+  Table2,
+  MessageSquare,
+} from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useCurrentClient } from "@/lib/client-context";
 import { resetStore } from "@/lib/store";
@@ -13,6 +22,21 @@ export default function SettingsPage() {
   const { user } = useAuth();
   const client = useCurrentClient();
   const [copied, setCopied] = useState(false);
+  const [widgetCopied, setWidgetCopied] = useState(false);
+
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : "https://app.rozalix.com";
+  const widgetSnippet = `<script
+  src="${origin}/embed.js"
+  data-rozalix-key="${client?.id ?? "your-client-id"}"
+  async
+></script>`;
+
+  async function copyWidget() {
+    await navigator.clipboard.writeText(widgetSnippet);
+    setWidgetCopied(true);
+    setTimeout(() => setWidgetCopied(false), 1800);
+  }
 
   const snippet = `// Wire your contact form to the Rozalix CRM (future API)
 await fetch("https://api.rozalix.com/v1/leads", {
@@ -43,13 +67,6 @@ await fetch("https://api.rozalix.com/v1/leads", {
 
   return (
     <div className="max-w-3xl space-y-5">
-      <div>
-        <h2 className="text-xl font-semibold">Settings</h2>
-        <p className="mt-1 text-sm text-[var(--color-slate-500)]">
-          Your account and website connection.
-        </p>
-      </div>
-
       {/* Account */}
       <Card>
         <CardHeader title="Account" />
@@ -136,6 +153,53 @@ await fetch("https://api.rozalix.com/v1/leads", {
               </span>
             ))}
           </div>
+        </div>
+      </Card>
+
+      {/* Install the chat widget */}
+      <Card>
+        <CardHeader
+          title="Install the chat widget"
+          action={
+            <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[var(--color-indigo)]">
+              <MessageSquare className="size-4" /> Live
+            </span>
+          }
+        />
+        <div className="space-y-4 px-5 py-5">
+          <p className="text-sm text-[var(--color-slate-500)]">
+            Paste this snippet just before <code>&lt;/body&gt;</code> on any page
+            of your website. The AI receptionist appears as a chat bubble, and
+            every conversation flows into your dashboard.
+          </p>
+          <div className="relative">
+            <pre className="scroll-slim overflow-x-auto rounded-[var(--radius-md)] bg-[var(--color-ink-900)] px-4 py-4 font-[var(--font-mono)] text-[12.5px] leading-relaxed text-[#E2E8F0]">
+              <code>{widgetSnippet}</code>
+            </pre>
+            <button
+              onClick={copyWidget}
+              className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-[var(--radius-md)] bg-white/10 px-2.5 py-1.5 text-[12px] font-medium text-white transition-colors hover:bg-white/20"
+            >
+              {widgetCopied ? (
+                <>
+                  <Check className="size-3.5" /> Copied
+                </>
+              ) : (
+                <>
+                  <Copy className="size-3.5" /> Copy
+                </>
+              )}
+            </button>
+          </div>
+          <p className="flex items-start gap-2 text-[13px] text-[var(--color-slate-400)]">
+            <Code2 className="mt-0.5 size-4 shrink-0" />
+            Works on any site — no framework needed. Configure the agent&apos;s
+            name, icon, knowledge, and availability under{" "}
+            <span className="font-medium text-[var(--color-slate-500)]">
+              Assistant
+            </span>
+            .
+          </p>
         </div>
       </Card>
 
