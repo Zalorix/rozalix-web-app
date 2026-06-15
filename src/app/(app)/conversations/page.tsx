@@ -298,7 +298,9 @@ function ConversationsPage() {
             mobile it fills the screen and hides once a chat is opened. */}
         <Card
           className={cn(
-            "min-h-0 flex-1 flex-col overflow-hidden lg:flex lg:h-auto lg:min-h-0",
+            // Mobile: full-bleed, borderless list (edge-to-edge, scrollbar at
+            // the screen edge). Desktop: the bordered 320px column.
+            "-mx-4 min-h-0 flex-1 flex-col overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:-mx-6 lg:mx-0 lg:flex lg:h-auto lg:min-h-0 lg:rounded-[var(--radius-lg)] lg:border lg:bg-white lg:shadow-[var(--shadow-card)]",
             selected ? "hidden lg:flex" : "flex",
           )}
         >
@@ -319,7 +321,7 @@ function ConversationsPage() {
               description="Try clearing the status filter or search."
             />
           ) : (
-            <ul className="scroll-slim min-h-0 flex-1 overflow-y-auto">
+            <ul className="scroll-slim min-h-0 flex-1 overflow-y-auto bg-white lg:bg-transparent">
               {listItems.map((c) => (
                 <li key={c.id}>
                   <button

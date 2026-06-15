@@ -309,8 +309,10 @@ function LeadsPage() {
         </div>
       </div>
 
-      {/* Table — only the body scrolls; the toolbar (above) and header stay. */}
-      <Card className="flex min-h-0 flex-1 flex-col overflow-hidden">
+      {/* Table — only the body scrolls; the toolbar (above) and header stay.
+          On mobile the list goes full-bleed + borderless (edge-to-edge, like a
+          native app); the scrollbar ends up at the screen's right edge. */}
+      <Card className="-mx-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:-mx-6 lg:mx-0 lg:rounded-[var(--radius-lg)] lg:border lg:bg-white lg:shadow-[var(--shadow-card)]">
         {leads === null ? (
           <div className="flex justify-center py-20">
             <Spinner />
@@ -328,7 +330,7 @@ function LeadsPage() {
         ) : (
           <>
             {/* Mobile: card list with scroll-to-load (the table is desktop-only) */}
-            <ul className="scroll-slim min-h-0 flex-1 divide-y divide-[var(--color-slate-100)] overflow-auto lg:hidden">
+            <ul className="scroll-slim min-h-0 flex-1 divide-y divide-[var(--color-slate-100)] overflow-auto bg-white lg:hidden lg:bg-transparent">
               {mobileItems.map((l) => {
                 const flag = chatByPhone.get(l.phone);
                 const hot = client && quickScore(l, client).tier === "hot";
