@@ -39,6 +39,8 @@ import { Pagination } from "@/components/ui/Pagination";
 import { FilterPopover } from "@/components/ui/FilterPopover";
 import { Input, Select, Label } from "@/components/ui/Field";
 import { AgentAvatar } from "@/components/chat/AgentAvatar";
+import { useInfiniteCount } from "@/lib/use-infinite-count";
+import { useIsDesktop } from "@/lib/use-is-desktop";
 
 const uid = (p: string) => `${p}_${Math.random().toString(36).slice(2, 10)}`;
 
@@ -171,6 +173,15 @@ function ConversationsPage() {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
   const pageItems = visible.slice((page - 1) * pageSize, page * pageSize);
+
+  // Mobile: scroll-to-load instead of pagination; desktop keeps pagination.
+  const isDesktop = useIsDesktop();
+  const { count: mobileCount, sentinelRef } = useInfiniteCount(
+    visible.length,
+    20,
+    `${client?.id}|${statusFilter}|${query}`,
+  );
+  const listItems = isDesktop ? pageItems : visible.slice(0, mobileCount);
 
   const selected = useMemo(
     () => list?.find((c) => c.id === selectedId) ?? null,
@@ -309,7 +320,7 @@ function ConversationsPage() {
             />
           ) : (
             <ul className="scroll-slim min-h-0 flex-1 overflow-y-auto">
-              {pageItems.map((c) => (
+              {listItems.map((c) => (
                 <li key={c.id}>
                   <button
                     onClick={() => setSelectedId(c.id)}
@@ -349,15 +360,27 @@ function ConversationsPage() {
                   </button>
                 </li>
               ))}
+              {!isDesktop && (
+                <li>
+                  <div ref={sentinelRef} />
+                  <p className="py-3 text-center text-[12px] text-[var(--color-slate-400)]">
+                    {mobileCount < visible.length
+                      ? "Loading more…"
+                      : `${visible.length} ${visible.length === 1 ? "chat" : "chats"}`}
+                  </p>
+                </li>
+              )}
             </ul>
           )}
-          <Pagination
-            page={page}
-            totalPages={totalPages}
-            onPage={setPage}
-            totalItems={total}
-            pageSize={pageSize}
-          />
+          <div className="hidden lg:block">
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              onPage={setPage}
+              totalItems={total}
+              pageSize={pageSize}
+            />
+          </div>
         </Card>
 
         {/* Transcript */}

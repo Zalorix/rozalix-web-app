@@ -28,6 +28,7 @@ import { EmptyState, Spinner } from "@/components/ui/EmptyState";
 import { Pagination } from "@/components/ui/Pagination";
 import { FilterPopover } from "@/components/ui/FilterPopover";
 import { LeadDrawer } from "@/components/dashboard/LeadDrawer";
+import { useInfiniteCount } from "@/lib/use-infinite-count";
 
 type Filter = "all" | LeadStatus;
 
@@ -216,6 +217,15 @@ function LeadsPage() {
   }, [page, totalPages]);
   const pageItems = visible.slice((page - 1) * pageSize, page * pageSize);
 
+  // Mobile: scroll-to-load instead of pagination. Resets to the top whenever
+  // the filtered set changes shape.
+  const { count: mobileCount, sentinelRef } = useInfiniteCount(
+    visible.length,
+    20,
+    `${client?.id}|${status}|${query}|${JSON.stringify(fieldFilters)}|${JSON.stringify(sort)}`,
+  );
+  const mobileItems = visible.slice(0, mobileCount);
+
   const selected = leads?.find((l) => l.id === selectedId) ?? null;
 
   return (
@@ -317,9 +327,9 @@ function LeadsPage() {
           />
         ) : (
           <>
-            {/* Mobile: card list (the table is desktop-only) */}
+            {/* Mobile: card list with scroll-to-load (the table is desktop-only) */}
             <ul className="scroll-slim min-h-0 flex-1 divide-y divide-[var(--color-slate-100)] overflow-auto lg:hidden">
-              {pageItems.map((l) => {
+              {mobileItems.map((l) => {
                 const flag = chatByPhone.get(l.phone);
                 const hot = client && quickScore(l, client).tier === "hot";
                 return (
@@ -369,6 +379,15 @@ function LeadsPage() {
                   </li>
                 );
               })}
+              {/* Sentinel + count — loads more as it scrolls into view */}
+              <li>
+                <div ref={sentinelRef} />
+                <p className="py-3 text-center text-[12px] text-[var(--color-slate-400)]">
+                  {mobileCount < visible.length
+                    ? "Loading more…"
+                    : `${visible.length} ${visible.length === 1 ? "lead" : "leads"}`}
+                </p>
+              </li>
             </ul>
 
             <div className="scroll-slim hidden min-h-0 flex-1 overflow-auto lg:block">
@@ -478,13 +497,15 @@ function LeadsPage() {
                 </tbody>
               </table>
             </div>
-            <Pagination
-              page={page}
-              totalPages={totalPages}
-              onPage={setPage}
-              totalItems={visible.length}
-              pageSize={pageSize}
-            />
+            <div className="hidden lg:block">
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onPage={setPage}
+                totalItems={visible.length}
+                pageSize={pageSize}
+              />
+            </div>
           </>
         )}
       </Card>
