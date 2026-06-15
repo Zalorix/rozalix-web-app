@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Search,
@@ -226,6 +226,21 @@ function LeadsPage() {
   );
   const mobileItems = visible.slice(0, mobileCount);
 
+  // Bottom fade: a "more below" hint, shown only while the list can scroll down.
+  const mobileListRef = useRef<HTMLUListElement>(null);
+  const [showFade, setShowFade] = useState(false);
+  function updateFade() {
+    const el = mobileListRef.current;
+    setShowFade(
+      !!el && el.scrollHeight - el.scrollTop - el.clientHeight > 8,
+    );
+  }
+  useEffect(() => {
+    updateFade();
+    window.addEventListener("resize", updateFade);
+    return () => window.removeEventListener("resize", updateFade);
+  }, [mobileItems.length, leads]);
+
   const selected = leads?.find((l) => l.id === selectedId) ?? null;
 
   return (
@@ -312,7 +327,7 @@ function LeadsPage() {
       {/* Table — only the body scrolls; the toolbar (above) and header stay.
           On mobile the list goes full-bleed + borderless (edge-to-edge, like a
           native app); the scrollbar ends up at the screen's right edge. */}
-      <Card className="-mx-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:-mx-6 lg:mx-0 lg:rounded-[var(--radius-lg)] lg:border lg:bg-white lg:shadow-[var(--shadow-card)]">
+      <Card className="relative -mx-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:-mx-6 lg:mx-0 lg:rounded-[var(--radius-lg)] lg:border lg:bg-white lg:shadow-[var(--shadow-card)]">
         {leads === null ? (
           <div className="flex justify-center py-20">
             <Spinner />
@@ -330,7 +345,11 @@ function LeadsPage() {
         ) : (
           <>
             {/* Mobile: card list with scroll-to-load (the table is desktop-only) */}
-            <ul className="scroll-slim min-h-0 flex-1 divide-y divide-[var(--color-slate-100)] overflow-auto bg-white lg:hidden lg:bg-transparent">
+            <ul
+              ref={mobileListRef}
+              onScroll={updateFade}
+              className="scroll-slim min-h-0 flex-1 divide-y divide-[var(--color-slate-100)] overflow-auto bg-white lg:hidden lg:bg-transparent"
+            >
               {mobileItems.map((l) => {
                 const flag = chatByPhone.get(l.phone);
                 const hot = client && quickScore(l, client).tier === "hot";
@@ -508,6 +527,15 @@ function LeadsPage() {
                 pageSize={pageSize}
               />
             </div>
+
+            {/* Mobile-only "more below" fade — hidden once you reach the end */}
+            <div
+              aria-hidden
+              className={cn(
+                "pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-white to-transparent transition-opacity duration-200 lg:hidden",
+                showFade ? "opacity-100" : "opacity-0",
+              )}
+            />
           </>
         )}
       </Card>
