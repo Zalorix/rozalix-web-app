@@ -105,8 +105,10 @@
       "border-radius:9999px",
       "border:0",
       "cursor:pointer",
-      "box-shadow:0 10px 26px rgba(15,23,42,.26)",
-      "background:" + accent,
+      "box-shadow:0 8px 20px rgba(15,23,42,.16)",
+      // Softened brand tint (mixed toward white) so the disc doesn't shout —
+      // the robot's own colours carry the attention.
+      "background:color-mix(in srgb," + accent + " 16%,#fff)",
       "color:#fff",
       "display:flex",
       "align-items:center",
