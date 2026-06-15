@@ -32,6 +32,7 @@ export const SETTINGS_ITEM: NavItem = {
 };
 
 export function titleForPath(pathname: string): string {
+  if (pathname === "/more" || pathname.startsWith("/more/")) return "More";
   const item = [...NAV_ITEMS, SETTINGS_ITEM].find(
     (n) => pathname === n.href || pathname.startsWith(`${n.href}/`),
   );

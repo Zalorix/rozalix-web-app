@@ -1,18 +1,12 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Menu, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { titleForPath, subtitleForPath } from "@/lib/nav";
 import { useAuth } from "@/lib/auth";
 import type { Client } from "@/lib/types";
 
-export function Topbar({
-  client,
-  onMenu,
-}: {
-  client: Client | null;
-  onMenu: () => void;
-}) {
+export function Topbar({ client }: { client: Client | null }) {
   const pathname = usePathname();
   const { user } = useAuth();
   const title = titleForPath(pathname);
@@ -23,18 +17,13 @@ export function Topbar({
   );
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-3 border-b border-[var(--color-slate-200)] bg-white/85 px-4 backdrop-blur-md sm:px-6">
-      <button
-        type="button"
-        onClick={onMenu}
-        className="flex size-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] text-[var(--color-slate-500)] hover:bg-[var(--color-slate-100)] lg:hidden"
-        aria-label="Open menu"
-      >
-        <Menu className="size-5" />
-      </button>
-
+    <header
+      className="sticky top-0 z-20 flex min-h-16 shrink-0 items-center gap-3 border-b border-[var(--color-slate-200)] bg-white/85 px-4 py-2.5 backdrop-blur-md sm:px-6"
+      // Clear the notch / status bar when installed as a PWA.
+      style={{ paddingTop: "max(0.625rem, env(safe-area-inset-top))" }}
+    >
       <div className="min-w-0">
-        <h1 className="truncate text-[16px] leading-tight font-semibold">
+        <h1 className="truncate text-[20px] leading-tight font-semibold tracking-[-0.01em] lg:text-[16px]">
           {title}
         </h1>
         {subtitle && (

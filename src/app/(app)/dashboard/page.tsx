@@ -2,10 +2,20 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Inbox, Sparkles, Trophy, FileText, ArrowRight } from "lucide-react";
+import {
+  Inbox,
+  Sparkles,
+  Trophy,
+  FileText,
+  ArrowRight,
+  TriangleAlert,
+  ChevronRight,
+} from "lucide-react";
 import type { Lead, ContentPage } from "@/lib/types";
+import type { Conversation } from "@/lib/assistant-types";
 import { useWorkspace } from "@/lib/client-context";
 import { listLeads, listContent } from "@/lib/store";
+import { listConversations } from "@/lib/assistant-store";
 import { fullName, initials, timeAgo, formatDate } from "@/lib/format";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
@@ -20,6 +30,7 @@ export default function DashboardPage() {
   const { client } = useWorkspace();
   const [leads, setLeads] = useState<Lead[] | null>(null);
   const [pages, setPages] = useState<ContentPage[] | null>(null);
+  const [escalated, setEscalated] = useState<Conversation | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const refresh = useMemo(
@@ -27,6 +38,9 @@ export default function DashboardPage() {
       if (!client) return;
       listLeads(client.id).then(setLeads);
       listContent(client.id).then(setPages);
+      listConversations(client.id).then((cs) =>
+        setEscalated(cs.find((c) => c.status === "escalated") ?? null),
+      );
     },
     [client],
   );
@@ -34,6 +48,7 @@ export default function DashboardPage() {
   useEffect(() => {
     setLeads(null);
     setPages(null);
+    setEscalated(null);
     setSelectedId(null);
     refresh();
   }, [client?.id, refresh]);
@@ -58,8 +73,35 @@ export default function DashboardPage() {
     return value !== undefined && value !== "" ? String(value) : l.email || l.phone;
   }
 
+  // The most recent customer message on the escalated chat, for the alert.
+  const escalatedSnippet =
+    [...(escalated?.messages ?? [])]
+      .reverse()
+      .find((m) => m.role === "customer")?.text ?? "A customer is waiting for a reply.";
+
   return (
     <div className="space-y-6">
+      {/* A customer needs you — escalated chat */}
+      {escalated && (
+        <Link
+          href={`/conversations?c=${escalated.id}`}
+          className="flex items-center gap-3 rounded-[16px] border border-[var(--color-error-100,#FECACA)] bg-[linear-gradient(180deg,#FFF5F5,#FEF2F2)] p-3.5 shadow-[0_1px_3px_rgba(239,68,68,.08)]"
+        >
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-[11px] bg-[#FEE2E2] text-[#DC2626]">
+            <TriangleAlert className="size-5" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[14px] font-semibold text-[#991B1B]">
+              A customer needs you
+            </span>
+            <span className="block truncate text-[12.5px] text-[#B91C1C]">
+              {escalatedSnippet}
+            </span>
+          </span>
+          <ChevronRight className="size-4 shrink-0 text-[#DC2626]" />
+        </Link>
+      )}
+
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <Stat

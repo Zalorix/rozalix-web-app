@@ -318,7 +318,61 @@ function LeadsPage() {
           />
         ) : (
           <>
-            <div className="scroll-slim min-h-0 flex-1 overflow-auto">
+            {/* Mobile: card list (the table is desktop-only) */}
+            <ul className="scroll-slim min-h-0 flex-1 divide-y divide-[var(--color-slate-100)] overflow-auto lg:hidden">
+              {pageItems.map((l) => {
+                const flag = chatByPhone.get(l.phone);
+                const hot = client && quickScore(l, client).tier === "hot";
+                return (
+                  <li key={l.id}>
+                    <button
+                      onClick={() => setSelectedId(l.id)}
+                      className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors active:bg-[var(--color-slate-50)]"
+                    >
+                      <Avatar
+                        size="sm"
+                        initials={initials(l.firstName, l.lastName)}
+                        accent={client?.accent}
+                      />
+                      <span className="min-w-0 flex-1">
+                        <span className="flex items-center gap-1.5">
+                          <span className="truncate text-[14.5px] font-medium">
+                            {fullName(l.firstName, l.lastName)}
+                          </span>
+                          {hot && (
+                            <span className="inline-flex shrink-0 items-center gap-0.5 rounded-[var(--radius-pill)] bg-[#FEF2F2] px-1.5 py-0.5 text-[10px] font-bold text-[#DC2626]">
+                              <Zap className="size-2.5" />
+                              HOT
+                            </span>
+                          )}
+                          {flag?.open && (
+                            <MessageSquare
+                              className={cn(
+                                "size-3.5 shrink-0",
+                                flag.needsYou
+                                  ? "text-[var(--color-error)]"
+                                  : "text-[var(--color-slate-400)]",
+                              )}
+                            />
+                          )}
+                        </span>
+                        <span className="block truncate text-[12px] text-[var(--color-slate-400)]">
+                          {l.email || l.phone}
+                        </span>
+                      </span>
+                      <span className="flex shrink-0 flex-col items-end gap-1.5">
+                        <LeadStatusBadge status={l.status} />
+                        <span className="text-[11px] text-[var(--color-slate-300)]">
+                          {timeAgo(l.createdAt)}
+                        </span>
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="scroll-slim hidden min-h-0 flex-1 overflow-auto lg:block">
               <table className="w-full text-sm">
                 <thead className="sticky top-0 z-10 bg-white">
                   <tr className="border-b border-[var(--color-slate-100)] text-left text-[12px] font-semibold tracking-wide text-[var(--color-slate-400)] uppercase">
