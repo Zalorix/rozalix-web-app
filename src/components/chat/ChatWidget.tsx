@@ -310,7 +310,7 @@ export function ChatWidget({
           </g>
           <path
             d="M50 51 L70 75"
-            stroke="var(--color-violet)"
+            stroke="var(--color-indigo-400)"
             strokeWidth={11}
             strokeLinecap="butt"
             strokeDasharray="18 7"
